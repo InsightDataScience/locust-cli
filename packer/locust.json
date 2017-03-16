@@ -1,0 +1,69 @@
+{
+    "variables": {
+        "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+        "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}"
+    },
+    "builders": [{
+        "type": "amazon-ebs",
+        "access_key": "{{user `aws_access_key`}}",
+        "secret_key": "{{user `aws_secret_key`}}",
+        "region": "us-west-2",
+        "vpc_id": "vpc-806b03e7",
+        "subnet_id": "subnet-6934b40e",
+        "source_ami": "ami-5e63d13e",
+        "instance_type": "t2.medium",
+        "ssh_username": "ubuntu",
+        "ami_name": "locust-{{timestamp}}",
+        "ami_groups": "all",
+        "associate_public_ip_address": true,
+        "tags": {
+            "Name": "locust"
+        }
+    }],
+    "provisioners": [
+        {
+            "type": "shell",
+            "scripts": [
+                "install.sh"
+            ],
+            "pause_before": "30s"
+        },
+        {
+            "type": "file",
+            "source": "src/locustfile.py",
+            "destination": "/home/ubuntu/locustfile.py"
+        },
+        {
+            "type": "file",
+            "source": "src/config.json",
+            "destination": "/home/ubuntu/config.json"
+        },
+        {
+            "type": "file",
+            "source": "templates/etc/security/limits.conf",
+            "destination": "/home/ubuntu/limits.conf"
+        },
+        {
+            "type": "file",
+            "source": "templates/etc/init/locust-master.conf",
+            "destination": "/home/ubuntu/locust-master.conf"
+        },
+        {
+            "type": "file",
+            "source": "templates/etc/init/locust-slave.conf",
+            "destination": "/home/ubuntu/locust-slave.conf"
+        },
+        {
+            "type": "shell",
+            "inline": "sudo mv /home/ubuntu/limits.conf /etc/security/limits.conf"
+        },
+        {
+            "type": "shell",
+            "inline": "sudo mv /home/ubuntu/locust-master.conf /etc/init/locust-master.conf"
+        },
+        {
+            "type": "shell",
+            "inline": "sudo mv /home/ubuntu/locust-slave.conf /etc/init/locust-slave.conf"
+        }
+    ]
+}

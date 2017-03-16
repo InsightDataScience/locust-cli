@@ -1,0 +1,7 @@
+#!/bin/bash
+
+fullpath=$(dirname "${BASH_SOURCE}")
+
+cd $fullpath
+
+ansible-playbook start-slaves.yml

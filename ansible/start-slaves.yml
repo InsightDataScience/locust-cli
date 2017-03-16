@@ -1,0 +1,30 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+  - name: Gather locust master ec2 facts
+    ec2_remote_facts:
+      filters:
+        instance-state-name: running
+        "tag:Name": locust-master
+    register: locust_master_ec2
+- hosts: tag_Name_locust_slave:&key_wom
+  become: true
+  tasks:
+  - name: Copy locustfile to remote
+    copy:
+      src: src/locustfile.py
+      dest: /home/ubuntu/locustfile.py
+  - name: Template locust config to remote
+    template:
+      src: src/config.json.j2
+      dest: /home/ubuntu/config.json
+  - name: Template upstart locust slave to remote
+    template:
+      src: templates/etc/init/locust-slave.conf.j2
+      dest: /etc/init/locust-slave.conf
+  - name: Start slave services
+    service:
+      name: locust-slave
+      state: restarted

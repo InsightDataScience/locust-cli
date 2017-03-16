@@ -1,0 +1,75 @@
+#!/bin/bash
+
+# Copyright 2015 Insight Data Science
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+set -o errexit
+
+filepath=$(dirname "${BASH_SOURCE}")
+
+nargs="$#"
+
+if [ ${nargs} == 0 ]; then
+  echo "usage: locli <command> [parameters]"
+  echo "locli: error: too few arguments"
+  echo "use the -h option for available commands"
+  exit 1
+fi
+
+while getopts ":h" opt; do
+  case ${opt} in
+    h)
+      echo "locli"
+      echo "    - up"
+      echo "    - config-workers"
+      echo "    - scale-up"
+      echo "    - scale-down"
+      echo "    - down"
+      exit 1
+      ;;
+
+    *)
+      echo "invalid option flag: -${OPTARG}"
+      exit 1
+      ;;
+  esac
+done
+
+args=("$@")
+command=${args[0]}
+parameters=${args[@]:1}
+nfargs=$(echo ${parameters} | wc -w)
+
+case ${command} in
+  up)
+    ;;
+
+  down)
+    ;;
+
+  config-workers)
+    ;;
+
+  scale-up)
+    ;;
+
+  scale-down)
+    ;;
+
+  *)
+    echo "invalid command. use -h to see available commands"
+    exit 1
+esac
+
+

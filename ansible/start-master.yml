@@ -1,0 +1,21 @@
+---
+- hosts: tag_Name_locust_master:&key_wom
+  become: true
+  environment:
+  tasks:
+  - name: Copy locustfile to remote
+    copy:
+      src: src/locustfile.py
+      dest: /home/ubuntu/locustfile.py
+  - name: Template locust config to remote
+    template:
+      src: src/config.json.j2
+      dest: /home/ubuntu/config.json
+  - name: Copy upstart master to remote
+    copy:
+      src: templates/etc/init/locust-master.conf
+      dest: /etc/init/locust-master.conf
+  - name: Start master service
+    service:
+      name: locust-master
+      state: restarted

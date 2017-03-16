@@ -1,0 +1,11 @@
+#!/bin/bash
+
+fullpath=$(dirname "${BASH_SOURCE}")
+
+cd $fullpath
+
+if [ $# -eq 1 ]; then
+  terraform apply -var locust-slave-count=$1
+else
+  terraform apply
+fi
