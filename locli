@@ -16,7 +16,7 @@
 
 set -o errexit
 
-filepath=$(dirname "${BASH_SOURCE}")
+fullpath=$(dirname "${BASH_SOURCE}")
 
 nargs="$#"
 
@@ -33,8 +33,7 @@ while getopts ":h" opt; do
       echo "locli"
       echo "    - up"
       echo "    - config-workers"
-      echo "    - scale-up"
-      echo "    - scale-down"
+      echo "    - scale"
       echo "    - down"
       exit 1
       ;;
@@ -53,18 +52,41 @@ nfargs=$(echo ${parameters} | wc -w)
 
 case ${command} in
   up)
+    if [[ "${nfargs}" -eq "1" ]]; then
+      num_slaves=${parameters}
+      $fullpath/terraform/apply ${num_slaves}
+    else
+      $fullpath/terraform/apply
+    fi
+
+    sleep 5
+
+    $fullpath/ansible/start-master &
+    $fullpath/ansible/start-slaves &
+
+    wait
     ;;
 
   down)
+    $fullpath/terraform/destroy
     ;;
 
   config-workers)
     ;;
 
-  scale-up)
-    ;;
+  scale)
+    if [[ "${nfargs}" -eq "1" ]]; then
+      num_slaves=${parameters}
+      $fullpath/terraform/apply ${num_slaves}
+    else
+      echo "invalid number of arguments"
+      echo "usage: locli scale-up <num-workers>"
+      exit 1
+    fi
 
-  scale-down)
+    sleep 5
+
+    $fullpath/ansible/start-slaves
     ;;
 
   *)
