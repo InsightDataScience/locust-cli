@@ -50,6 +50,11 @@ command=${args[0]}
 parameters=${args[@]:1}
 nfargs=$(echo ${parameters} | wc -w)
 
+export API_PATH=/
+export MIN_WAIT=1000
+export MAX_WAIT=2000
+export HOST='http://google.com'
+
 case ${command} in
   up)
     if [[ "${nfargs}" -eq "1" ]]; then
@@ -72,6 +77,51 @@ case ${command} in
     ;;
 
   config-workers)
+    while [[ $# -gt 0 ]]; do
+      case $1 in
+        --apipath)
+          if [ -n "$2" ]; then
+            export API_PATH=$2
+            shift;
+          else
+            echo "must specify API path"
+            exit 1
+          fi
+          ;;
+        --minwait)
+          if [ -n "$2" ]; then
+            export MIN_WAIT=$2
+            shift;
+          else
+            echo "must specify minimum wait time in milliseconds"
+            exit 1
+          fi
+          ;;
+        --maxwait)
+          if [ -n "$2" ]; then
+            export MAX_WAIT=$2
+            shift;
+          else
+            echo "must specify maximum wait time in milliseconds"
+            exit 1
+          fi
+          ;;
+        --host)
+          if [ -n "$2" ]; then
+            export HOST=$2
+            shift;
+          else
+            echo "must specify host to test against in the form of http://example.com"
+            exit 1
+          fi
+          ;;
+        *)
+          ;;
+      esac
+      shift;
+    done
+
+    $fullpath/ansible/start-slaves
     ;;
 
   scale)

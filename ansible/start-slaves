@@ -4,4 +4,6 @@ fullpath=$(dirname "${BASH_SOURCE}")
 
 cd $fullpath
 
+echo "Configuring locust workers..."
+
 ansible-playbook start-slaves.yml

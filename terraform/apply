@@ -4,6 +4,8 @@ fullpath=$(dirname "${BASH_SOURCE}")
 
 cd $fullpath
 
+echo "Provisioning locust environment and resources..."
+
 if [ $# -eq 1 ]; then
   terraform apply -var locust-slave-count=$1
 else

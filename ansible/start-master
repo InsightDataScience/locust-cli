@@ -4,4 +4,6 @@ fullpath=$(dirname "${BASH_SOURCE}")
 
 cd $fullpath
 
+echo "Configuring locust master..."
+
 ansible-playbook start-master.yml

@@ -1,1 +1,1 @@
-{"api_path":"/", "min_wait":1000, "max_wait":1000, "host":"http://google.com"}
+{"api_path": "{{ lookup('env', 'API_PATH') }}", "min_wait": {{ lookup('env', 'MIN_WAIT') }}, "max_wait": {{ lookup('env', 'MAX_WAIT') }}, "host": "{{ lookup('env', 'HOST') }}"}
