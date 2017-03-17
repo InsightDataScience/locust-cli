@@ -50,7 +50,7 @@ resource "aws_security_group" "locust" {
 resource "aws_instance" "locust-master" {
     ami = "${lookup(var.amis, var.aws_region)}"
     availability_zone = "us-west-2a"
-    instance_type = "t2.micro"
+    instance_type = "t2.medium"
     key_name = "${var.aws_key_name}"
     vpc_security_group_ids = ["${aws_security_group.locust.id}"]
     subnet_id = "${aws_subnet.public.id}"
@@ -70,7 +70,7 @@ resource "aws_eip" "locust-master" {
 resource "aws_instance" "locust-slave" {
     ami = "${lookup(var.amis, var.aws_region)}"
     availability_zone = "us-west-2a"
-    instance_type = "t2.medium"
+    instance_type = "m4.xlarge"
     key_name = "${var.aws_key_name}"
     vpc_security_group_ids = ["${aws_security_group.locust.id}"]
     subnet_id = "${aws_subnet.public.id}"

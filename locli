@@ -32,7 +32,7 @@ while getopts ":h" opt; do
     h)
       echo "locli"
       echo "    - up"
-      echo "    - config-workers"
+      echo "    - config"
       echo "    - scale"
       echo "    - down"
       exit 1
@@ -76,7 +76,7 @@ case ${command} in
     $fullpath/terraform/destroy
     ;;
 
-  config-workers)
+  config)
     while [[ $# -gt 0 ]]; do
       case $1 in
         --apipath)

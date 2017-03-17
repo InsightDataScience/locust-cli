@@ -30,40 +30,12 @@
         },
         {
             "type": "file",
-            "source": "src/locustfile.py",
-            "destination": "/home/ubuntu/locustfile.py"
-        },
-        {
-            "type": "file",
-            "source": "src/config.json",
-            "destination": "/home/ubuntu/config.json"
-        },
-        {
-            "type": "file",
             "source": "templates/etc/security/limits.conf",
             "destination": "/home/ubuntu/limits.conf"
         },
         {
-            "type": "file",
-            "source": "templates/etc/init/locust-master.conf",
-            "destination": "/home/ubuntu/locust-master.conf"
-        },
-        {
-            "type": "file",
-            "source": "templates/etc/init/locust-slave.conf",
-            "destination": "/home/ubuntu/locust-slave.conf"
-        },
-        {
             "type": "shell",
             "inline": "sudo mv /home/ubuntu/limits.conf /etc/security/limits.conf"
-        },
-        {
-            "type": "shell",
-            "inline": "sudo mv /home/ubuntu/locust-master.conf /etc/init/locust-master.conf"
-        },
-        {
-            "type": "shell",
-            "inline": "sudo mv /home/ubuntu/locust-slave.conf /etc/init/locust-slave.conf"
         }
     ]
 }
