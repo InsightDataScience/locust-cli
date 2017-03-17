@@ -1,0 +1,53 @@
+---
+- hosts: tag_Name_apache:&key_wom
+  become: true
+  tasks:
+  - name: Update package list
+    apt: update_cache=yes cache_valid_time=36000
+  - name: Install base packages
+    apt: name={{item}} state=present
+    with_items:
+      - python-pip
+      - python-dev
+      - apache2
+  - name: Install uwsgi and flask for python
+    pip: name={{item}} state=present
+    with_items:
+      - uwsgi
+      - flask
+  - name: Copy source code over to web server nodes
+    synchronize:
+      src: src/myproject
+      dest: /home/ubuntu
+  - name: Change ownership of project to ubuntu
+    file:
+      dest: /home/ubuntu/myproject
+      owner: ubuntu
+      group: ubuntu
+      recurse: yes
+  - name: Copy wsgi conf to remote
+    copy:
+      src: templates/etc/init/myproject.conf
+      dest: /etc/init/myproject.conf
+  - name: Copy apache config template
+    template:
+      src: templates/etc/apache2/sites-available/myproject.j2
+      dest: /etc/apache2/sites-available/myproject
+  - name: Create symbolic link for apache web application
+    file:
+      src: /etc/apache2/sites-available/myproject
+      dest: /etc/apache2/sites-enabled/myproject
+      state: link
+  - name: Delete default config for apache web application
+    file:
+      path: /etc/apache2/sites-available/default
+      state: absent
+  - name: Start wsgi process
+    service:
+      name: myproject
+      state: restarted
+  - name: Start apache process
+    service:
+      name: apache2
+      state: restarted
+

@@ -1,0 +1,53 @@
+---
+- hosts: tag_Name_nginx:&key_wom
+  become: true
+  tasks:
+  - name: Update package list
+    apt: update_cache=yes cache_valid_time=36000
+  - name: Install base packages
+    apt: name={{item}} state=present
+    with_items:
+      - python-pip
+      - python-dev
+      - nginx
+  - name: Install uwsgi and flask for python
+    pip: name={{item}} state=present
+    with_items:
+      - uwsgi
+      - flask
+  - name: Copy source code over to web server nodes
+    synchronize:
+      src: src/myproject
+      dest: /home/ubuntu
+  - name: Change ownership of project to ubuntu
+    file:
+      dest: /home/ubuntu/myproject
+      owner: ubuntu
+      group: ubuntu
+      recurse: yes
+  - name: Copy wsgi conf to remote
+    copy:
+      src: templates/etc/init/myproject.conf
+      dest: /etc/init/myproject.conf
+  - name: Copy nginx config template
+    template:
+      src: templates/etc/nginx/sites-available/myproject.j2
+      dest: /etc/nginx/sites-available/myproject
+  - name: Create symbolic link for nginx web application
+    file:
+      src: /etc/nginx/sites-available/myproject
+      dest: /etc/nginx/sites-enabled/myproject
+      state: link
+  - name: Delete default config for nginx web application
+    file:
+      path: /etc/nginx/sites-available/default
+      state: absent
+  - name: Start wsgi process
+    service:
+      name: myproject
+      state: restarted
+  - name: Start nginx process
+    service:
+      name: nginx
+      state: restarted
+
