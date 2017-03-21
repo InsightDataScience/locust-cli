@@ -10,6 +10,7 @@
       - python-pip
       - python-dev
       - apache2
+      - libapache2-mod-wsgi
   - name: Install uwsgi and flask for python
     pip: name={{item}} state=present
     with_items:
@@ -18,34 +19,26 @@
   - name: Copy source code over to web server nodes
     synchronize:
       src: src/myproject
-      dest: /home/ubuntu
+      dest: /var/www
   - name: Change ownership of project to ubuntu
     file:
-      dest: /home/ubuntu/myproject
+      dest: /var/www/myproject
       owner: ubuntu
       group: ubuntu
       recurse: yes
-  - name: Copy wsgi conf to remote
-    copy:
-      src: templates/etc/init/myproject.conf
-      dest: /etc/init/myproject.conf
   - name: Copy apache config template
-    template:
-      src: templates/etc/apache2/sites-available/myproject.j2
-      dest: /etc/apache2/sites-available/myproject
+    copy:
+      src: templates/etc/apache2/sites-available/myproject.conf
+      dest: /etc/apache2/sites-available/myproject.conf
   - name: Create symbolic link for apache web application
     file:
-      src: /etc/apache2/sites-available/myproject
-      dest: /etc/apache2/sites-enabled/myproject
+      src: /etc/apache2/sites-available/myproject.conf
+      dest: /etc/apache2/sites-enabled/myproject.conf
       state: link
   - name: Delete default config for apache web application
     file:
-      path: /etc/apache2/sites-available/default
+      path: /etc/apache2/sites-enabled/000-default.conf
       state: absent
-  - name: Start wsgi process
-    service:
-      name: myproject
-      state: restarted
   - name: Start apache process
     service:
       name: apache2
