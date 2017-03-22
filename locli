@@ -61,7 +61,9 @@ case ${command} in
       num_slaves=${parameters}
       $fullpath/terraform/apply ${num_slaves}
     else
-      $fullpath/terraform/apply
+      echo "must specify numper of locust workers to spawn"
+      echo "usage: locli up <num-workers>"
+      exit 1
     fi
 
     sleep 5
@@ -77,51 +79,57 @@ case ${command} in
     ;;
 
   config)
-    while [[ $# -gt 0 ]]; do
-      case $1 in
-        --apipath)
-          if [ -n "$2" ]; then
-            export API_PATH=$2
-            shift;
-          else
-            echo "must specify API path"
-            exit 1
-          fi
-          ;;
-        --minwait)
-          if [ -n "$2" ]; then
-            export MIN_WAIT=$2
-            shift;
-          else
-            echo "must specify minimum wait time in milliseconds"
-            exit 1
-          fi
-          ;;
-        --maxwait)
-          if [ -n "$2" ]; then
-            export MAX_WAIT=$2
-            shift;
-          else
-            echo "must specify maximum wait time in milliseconds"
-            exit 1
-          fi
-          ;;
-        --host)
-          if [ -n "$2" ]; then
-            export HOST=$2
-            shift;
-          else
-            echo "must specify host to test against in the form of http://example.com"
-            exit 1
-          fi
-          ;;
-        *)
-          ;;
-      esac
-      shift;
-    done
+    if [[ $# -eq 9 ]]; then
+      while [[ $# -gt 0 ]]; do
+        case $1 in
+          --apipath)
+            if [ -n "$2" ]; then
+              export API_PATH=$2
+              shift;
+            else
+              echo "must specify API path"
+              exit 1
+            fi
+            ;;
+          --minwait)
+            if [ -n "$2" ]; then
+              export MIN_WAIT=$2
+              shift;
+            else
+              echo "must specify minimum wait time in milliseconds"
+              exit 1
+            fi
+            ;;
+          --maxwait)
+            if [ -n "$2" ]; then
+              export MAX_WAIT=$2
+              shift;
+            else
+              echo "must specify maximum wait time in milliseconds"
+              exit 1
+            fi
+            ;;
+          --host)
+            if [ -n "$2" ]; then
+              export HOST=$2
+              shift;
+            else
+              echo "must specify host to test against in the form of http://example.com"
+              exit 1
+            fi
+            ;;
+          *)
+            ;;
+        esac
+        shift;
+      done
 
-    $fullpath/ansible/start-slaves
+      $fullpath/ansible/start-slaves
+    else
+      echo "invalid number of input arguments for config"
+      echo "usage: locli config --apipath / --host http://google.com --minwait 1000 --maxwait 1000"
+      exit 1
+    fi
     ;;
 
   scale)
