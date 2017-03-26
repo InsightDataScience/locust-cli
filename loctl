@@ -124,7 +124,11 @@ case ${command} in
         shift;
       done
 
-      $fullpath/ansible/start-slaves
+      $fullpath/ansible/start-master &
+      $fullpath/ansible/start-slaves &
+
+      wait
+
     else
       echo "invalid number of input arguments for config"
       echo "usage: locli config --apipath / --host http://google.com --minwait 1000 --maxwait 1000"
@@ -144,7 +148,11 @@ case ${command} in
 
     sleep 5
 
-    $fullpath/ansible/start-slaves
+    $fullpath/ansible/start-master &
+    $fullpath/ansible/start-slaves &
+
+    wait
+
     ;;
 
   *)

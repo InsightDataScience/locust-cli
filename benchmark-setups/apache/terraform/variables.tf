@@ -8,6 +8,8 @@ variable "aws_region" {
     default = "us-west-2"
 }
 
+variable "instance_type" {default="m4.large"}
+
 variable "amis" {
     description = "AMIs by region"
     default = {

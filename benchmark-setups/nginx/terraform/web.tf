@@ -43,7 +43,7 @@ resource "aws_security_group" "nginx" {
 resource "aws_instance" "nginx" {
     ami = "${lookup(var.amis, var.aws_region)}"
     availability_zone = "us-west-2a"
-    instance_type = "t2.medium"
+    instance_type = "${var.instance_type}"
     key_name = "${var.aws_key_name}"
     vpc_security_group_ids = ["${aws_security_group.nginx.id}"]
     subnet_id = "${aws_subnet.public.id}"

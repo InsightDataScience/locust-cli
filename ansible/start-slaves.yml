@@ -9,7 +9,7 @@
         instance-state-name: running
         "tag:Name": locust-master
     register: locust_master_ec2
-- hosts: tag_Name_locust_slave:&key_wom
+- hosts: tag_Name_locust_slave:&key_locust
   become: true
   tasks:
   - name: Copy locustfile to remote

@@ -1,5 +1,5 @@
 ---
-- hosts: tag_Name_locust_master:&key_wom
+- hosts: tag_Name_locust_master:&key_locust
   become: true
   environment:
   tasks:

@@ -1,7 +1,11 @@
 ---
-- hosts: tag_Name_apache:&key_wom
+- hosts: tag_Name_apache:&key_locust
   become: true
   tasks:
+  - name: Update max number of open files
+    copy:
+      src: templates/etc/security/limits.conf
+      dest: /etc/security/limits.conf
   - name: Update package list
     apt: update_cache=yes cache_valid_time=36000
   - name: Install base packages
@@ -26,6 +30,10 @@
       owner: ubuntu
       group: ubuntu
       recurse: yes
+  - name: Copy wsgi conf to remote
+    copy:
+      src: templates/etc/init/myproject.conf
+      dest: /etc/init/myproject.conf
   - name: Copy apache config template
     copy:
       src: templates/etc/apache2/sites-available/myproject.conf
@@ -39,6 +47,10 @@
     file:
       path: /etc/apache2/sites-enabled/000-default.conf
       state: absent
+  - name: Start wsgi process
+    service:
+      name: myproject
+      state: restarted
   - name: Start apache process
     service:
       name: apache2

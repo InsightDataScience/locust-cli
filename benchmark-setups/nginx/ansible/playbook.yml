@@ -1,7 +1,11 @@
 ---
-- hosts: tag_Name_nginx:&key_wom
+- hosts: tag_Name_nginx:&key_locust
   become: true
   tasks:
+  - name: Update max number of open files
+    copy:
+      src: templates/etc/security/limits.conf
+      dest: /etc/security/limits.conf
   - name: Update package list
     apt: update_cache=yes cache_valid_time=36000
   - name: Install base packages
